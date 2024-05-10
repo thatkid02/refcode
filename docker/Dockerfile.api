@@ -1,0 +1,15 @@
+FROM node:21.7.0-alpine3.19 As development
+
+ARG NODE_ENV
+
+WORKDIR /home/nels/api
+
+COPY api/package*.json .
+
+RUN npm install
+
+COPY api/ .
+
+RUN npm run build
+
+RUN if [[ "$NODE_ENV" != "dev" ]] ; then npm prune --production ; fi

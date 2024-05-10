@@ -1,0 +1,73 @@
+services:
+    refcode-api:
+        container_name: refcode-api
+        image: refcode-api:latest
+        build:
+            context: .
+            dockerfile: docker/Dockerfile.api
+            target: development
+            args:
+                NODE_ENV: dev
+        env_file:
+            - .env
+        ports:
+            - "3018:3018"
+        volumes:
+            - ./api/:/home/nels/api/
+            - ./api/node_modules:/home/nels/api/node_modules
+            - /home/nels/api/node_modules/
+        command: npm run start:debug #tail -f /dev/null
+
+    refcode-web:
+        container_name: refcode-web
+        image: refcode-web:latest
+        build:
+            context: .
+            dockerfile: docker/Dockerfile.web
+            target: development
+            args:
+                NODE_ENV: dev
+        env_file:
+            - .env
+        ports:
+            - "5174:5174"
+        volumes:
+            - ./app/:/home/nels/app/
+            # - ./app/node_modules:/home/nels/app/node_modules
+            - ./app/dist:/home/nels/app/dist
+            - /home/nels/app/node_modules/
+        command: npm run dev #tail -f /dev/null
+
+    postgres:
+        image: postgres:16
+        networks:
+            refcode-network:
+                ipv4_address: 30.4.1.201
+        env_file:
+            - .env
+        ports:
+            - 5432:5432
+        volumes:
+            - refcodePgData:/var/lib/postgresql/data
+
+    pg-admin:
+        image: dpage/pgadmin4
+        user: root
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com
+            PGADMIN_DEFAULT_PASSWORD: root
+        ports:
+            - 5050:80
+        networks:
+            refcode-network:
+
+networks:
+    refcode-network:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 30.4.0.0/16
+
+volumes:
+    refcodePgData:

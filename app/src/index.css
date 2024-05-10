@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    box-sizing: border-box;
+    width: 100vw;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    color: rgb(2, 21, 16);
+    font-size: 16px;
+    font-family: TT Norms Pro, sans-serif;
+}
+
+[hidden] {
+    display: none !important;
+}
